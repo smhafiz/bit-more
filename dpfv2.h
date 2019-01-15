@@ -122,8 +122,8 @@ inline void expand(AES_KEY & aeskey, const __m128i & seed, __m128i s[2],
 }
 
 template <size_t nitems, typename leaf_type>
-void doleaf(size_t point, leaf_type output, dpf_key<nitems,leaf_type> & dpfkey,
-  __m128i s0[2], __m128i s1[2], uint8_t t[2])
+leaf_type doleaf(size_t point, leaf_type output, dpf_key<nitems,leaf_type> & dpfkey,
+  __m128i s0[2], __m128i s1[2], uint8_t t[2], bool swap)
 {
   constexpr size_t depth = dpf_key<nitems,leaf_type>::depth;
   constexpr size_t lg_outs_per_m128 = dpf_key<nitems,leaf_type>::lg_outs_per_m128;
@@ -132,16 +132,20 @@ void doleaf(size_t point, leaf_type output, dpf_key<nitems,leaf_type> & dpfkey,
 
   const uint8_t keep = (((point >> lg_outs_per_m128) & 1U) == 0) ? L : R;
   const size_t lo = (point & outs_per_u64) ? 0ULL : 1ULL;
-  dpfkey.final = _mm_set_epi64x(output*(1-lo), output*lo);
-  dpfkey.final = _mm_slli_epi64(dpfkey.final, leaf_bits * (point % outs_per_u64));
-  dpfkey.final = _mm_xor_si128(dpfkey.final, _mm_xor_si128(
-    _mm_xorif_si128(s0[keep], dpfkey.cw[depth-1], t[L]),
-    _mm_xorif_si128(s1[keep], dpfkey.cw[depth-1], t[R]))
-  );
+  const __m128i mask = _mm_slli_epi64(_mm_set_epi64x(output*(1-lo), output*lo),
+    leaf_bits * (point % outs_per_u64));
+  dpfkey.final = _mm_xor_si128(mask, dpfkey.cw[depth-1]);
+  dpfkey.final = _mm_xor_si128(dpfkey.final, _mm_xor_si128(s0[keep], s1[keep]));
+
+__m128i vcmp = _mm_xorif_si128(s0[keep],dpfkey.cw[depth-1], swap);
+vcmp = _mm_xorif_si128(vcmp, dpfkey.final, t[0]);
+vcmp = _mm_xor_si128(_mm_and_si128(vcmp, mask), mask);
+
+  return static_cast<bool>(_mm_testz_si128(vcmp, vcmp));
 }
 
 template <size_t nitems, typename leaf_type>
-void gen(AES_KEY & aeskey, size_t point, dpf_key<nitems,leaf_type> dpfkey[2],
+leaf_type gen(AES_KEY & aeskey, size_t point, dpf_key<nitems,leaf_type> dpfkey[2],
   leaf_type output = 1)
 {
   if (point >= nitems)
@@ -159,6 +163,7 @@ void gen(AES_KEY & aeskey, size_t point, dpf_key<nitems,leaf_type> dpfkey[2],
   t[1] = !t[0];
   dpfkey[1].root = _mm_setlsb_si128(s[1], t[1]);
 
+  bool swap;
   for (size_t i = 0; i < depth; ++i)
   {
     expand(aeskey, s[0], s0, t0);
@@ -176,13 +181,17 @@ void gen(AES_KEY & aeskey, size_t point, dpf_key<nitems,leaf_type> dpfkey[2],
     t[L] = t0[keep] ^ (t[L] & dpfkey[0].t[i][keep]);
     s[R] = _mm_xorif_si128(s1[keep], dpfkey[0].cw[i], t[R]);
     t[R] = t1[keep] ^ (t[R] & dpfkey[0].t[i][keep]);
+
+    if (i==depth-2) swap = t[0];
   }
 
-  doleaf(point, output, dpfkey[0], s0, s1, t);
+  auto ret = doleaf(point, output, dpfkey[0], s0, s1, t, swap);
 
   memcpy(&dpfkey[1].cw, &dpfkey[0].cw, sizeof(dpf_key<nitems,leaf_type>::cw));
   memcpy(&dpfkey[1].final, &dpfkey[0].final, sizeof(dpf_key<nitems,leaf_type>::final));
   memcpy(&dpfkey[1].t, &dpfkey[0].t, sizeof(dpf_key<nitems,leaf_type>::t));
+
+  return ret;
 }
 
 /*template <size_t nitems, typename leaf_type>
@@ -425,65 +434,16 @@ inline void evalfull_bitmore(AES_KEY & aeskey, dpf_key<nitems,leaf_type> * dpfke
   }
 }
 
-template <size_t nkeys, size_t nitems, typename leaf_type, uint8_t nservers = static_cast<uint8_t>(std::exp2(nkeys))>
-inline void evalfull_bitmore_any_nserver(AES_KEY & aeskey, dpf_key<nitems,leaf_type> * dpfkey,
-  __m128i ** s, uint8_t ** t, uint8_t * output)
-{
-  constexpr size_t depth = dpf_key<nitems,leaf_type>::depth;
-  constexpr size_t output_length = dpf_key<nitems,leaf_type>::output_length;
-
-  __m128i child[2];
-  uint8_t ts[2];
-  for (size_t l = 0; l < nkeys; ++l)
-  {
-    int curlayer = depth % 2;
-
-    __m128i * s_[2] = { s[l], s[l] + output_length/2 };
-    uint8_t * t_[2] = { t[l], t[l] + output_length/2 };
-
-    s_[curlayer][0] = dpfkey[l].root;
-    t_[curlayer][0] = _mm_getlsb_si128(dpfkey[l].root);
-
-    for (size_t i = 0; i < depth; ++i)
-    {
-      curlayer = 1 - curlayer;
-      const size_t itemnumber = std::max(output_length >> (depth-i), 1UL);
-      for (size_t j = 0; j < itemnumber; ++j)
-      {
-        expand(aeskey, s_[1-curlayer][j], child, ts);
-        s_[curlayer][2*j] = _mm_xorif_si128(child[L], dpfkey[l].cw[i], t_[1-curlayer][j]);
-        t_[curlayer][2*j] = ts[L] ^ dpfkey[l].t[i][L] & t_[1-curlayer][j];
-        if (2*j+1 < 2*itemnumber)
-        {
-          s_[curlayer][2*j+1] = _mm_xorif_si128(child[R], dpfkey[l].cw[i], t_[1-curlayer][j]);
-          t_[curlayer][2*j+1] = ts[R] ^ dpfkey[l].t[i][R] & t_[1-curlayer][j];
-        }
-      }
-    }
-  }
-
-  memset(output, 0, nitems * sizeof(uint8_t));
-  __m128i tmp[nkeys];
-  __m1024i * output1024 = reinterpret_cast<__m1024i *>(output);
-  for (size_t j = 0; j < output_length; ++j)
-  {
-    for (size_t l = 0; l < nkeys; ++l)
-    {
-      tmp[l] = _mm_xorif_si128(s[l][j], dpfkey[l].final, t[l][j]);
-    }
-    splice<nkeys,nservers>(tmp, output1024[j]);
-  }
-}
-
 template<size_t nitems>
 inline bool getword(dpf_key<nitems, bool> dpfkey, const size_t input,
   __m128i & S, uint8_t T)
 {
   const size_t lo = (input & 64) ? 0ULL : 1ULL;
   const __m128i mask = _mm_slli_epi64(_mm_set_epi64x(1-lo, lo), input % 64);
-  S = _mm_and_si128(_mm_xorif_si128(S, dpfkey.final, T), mask);
+  S = _mm_xorif_si128(S, dpfkey.final, T);
+  __m128i vcmp = _mm_xor_si128(_mm_and_si128(S, mask), mask);
 
-  return static_cast<bool>(_mm_testz_si128(S, mask));
+  return static_cast<bool>(_mm_testz_si128(vcmp, vcmp));
 }
 
 template<size_t nitems, typename leaf_type>

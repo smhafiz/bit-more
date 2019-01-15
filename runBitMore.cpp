@@ -34,13 +34,16 @@ struct record {
   struct word <B> words_in_record[number_of_struct_word_in_a_record];
 };
 
+
 int main(int argc, char *argv[]) {
-    int const number_of_rows = (1ULL << 10);//constant
-    int number_of_bytes_per_row = atoi(argv[2]);//1500
-    int const number_of_bytes_per_word = 50;//constant
+    // 2^10 number of rows, (2^8-1) number of words, each word 4 bytes
+    int const number_of_rows = (1ULL << 10);//constant;
+    int number_of_bytes_per_row = atoi(argv[2]);// 1020 bytes
+
+    int const number_of_bytes_per_word = 4;//constant
     printf("Rows: %i, Bytes per row: %i, bytes per word: %i\n", number_of_rows, number_of_bytes_per_row, number_of_bytes_per_word);
 
-    int const number_of_words_per_row = 30;//number_of_bytes_per_row % number_of_bytes_per_word == 0 ? number_of_bytes_per_row / number_of_bytes_per_word : number_of_bytes_per_row / number_of_bytes_per_word + 1;;
+    int const number_of_words_per_row = (1ULL << 8) - 1;// ell = s + 1; ell = 2 ^ L; 
     int number_of_bytes_in_file = number_of_rows*number_of_bytes_per_row;
     int number_of_256_in_a_word = number_of_bytes_per_word%32==0?number_of_bytes_per_word/32:number_of_bytes_per_word/32+1;
     
@@ -48,7 +51,7 @@ int main(int argc, char *argv[]) {
     int err = posix_memalign((void**)&chunks, 32, number_of_rows*number_of_words_per_row*sizeof(struct word<number_of_bytes_per_word>));
     if(err) perror("Error in memalign");
     int fd = open(argv[4], O_RDONLY);
-    if (fd == -1) perror("Error opening file for reading");
+    if (fd == -1) perror("Error opening file for writing");
 
     void *temp = NULL;
     char *data;
@@ -64,7 +67,11 @@ int main(int argc, char *argv[]) {
     struct record <number_of_bytes_per_word, number_of_words_per_row> *records;
     records = (struct record <number_of_bytes_per_word, number_of_words_per_row> *) chunks;
     
-    //Chor's protocol by dpf
+    //Bit more than a bit's protocol
+    //L pairs of dpf keys
+    //L calls to gen
+
+
 
     //common to client and servers
     using namespace dpf;
@@ -72,26 +79,55 @@ int main(int argc, char *argv[]) {
     AES_set_encrypt_key(_mm_set_epi64x(597349, 121379), &aeskey);
 
     typedef bool leaf_type;
-    const size_t nitems = number_of_rows;//(1ULL << 12);
-    dpf::dpf_key<nitems, leaf_type> dpfkey[2];
-    __m128i * s, * s1;
-    // printf("output_length: %d\n", (int)dpf_key<nitems,leaf_type>::output_length);
-    if (posix_memalign((void**)&s, sizeof(__m128i), dpf_key<nitems,leaf_type>::output_length * sizeof(__m128i)) != 0)
-      printf("alloc failed\n");
-    if (posix_memalign((void**)&s1, sizeof(__m128i), dpf_key<nitems,leaf_type>::output_length * sizeof(__m128i)) != 0)
-      printf("alloc failed\n");
-    uint8_t * t = (uint8_t*)malloc(dpf_key<nitems,leaf_type>::output_length);
-    uint8_t * t1 = (uint8_t*)malloc(dpf_key<nitems,leaf_type>::output_length);
+    const size_t nitems = number_of_rows;//(1ULL << 10);
+    int L_bits = 8;//Say 256 servers
+    dpf::dpf_key<nitems, leaf_type> dpfkey[L_bits][2];
+    //srand (time(NULL));
+    size_t server_index;// = rand() % (1ULL<<L_bits);
 
-    int query_length = number_of_rows % 64 == 0 ? number_of_rows/64:number_of_rows/64+1;
+    __m128i ** s;
+    if (posix_memalign((void**)&s, sizeof(__m128i *), L_bits * sizeof(__m128i *)) != 0)
+        printf("alloc failed\n");
+    uint8_t ** t = (uint8_t**)malloc(L_bits* sizeof(uint8_t *));
+
+    // printf("output_length: %d\n", (int)dpf_key<nitems,leaf_type>::output_length);
+    for(int i=0;i<L_bits;++i){
+      if (posix_memalign((void**)&s[i], sizeof(__m128i), (dpf_key<nitems,leaf_type>::output_length) * sizeof(__m128i)) != 0)
+        printf("alloc failed\n");
+      t[i] = (uint8_t *)malloc(dpf_key<nitems,leaf_type>::output_length+1);
+    }
+    
+
+    //int query_length = number_of_rows % 64 == 0 ? number_of_rows/64:number_of_rows/64+1;
 
     //client query construction
     const size_t item = 501;//row (index) to fetch
-    dpf::gen(aeskey, item, dpfkey, (leaf_type)1);
+    for(int i=0;i<L_bits;++i){
+      dpf::gen(aeskey, item, dpfkey[i], (leaf_type)1);
+    }
 
-    //server 1 query expansion and response construction
-    dpf::evalfull(aeskey, dpfkey[0], s, t);
+    dpf::dpf_key<nitems, leaf_type> dpfkey_for_a_server[L_bits];
+    for(size_t server_i = 0; server_i < (1ULL<<L_bits); ++server_i){
+      for(int i=0;i<L_bits;++i){
+        dpfkey_for_a_server[i] = dpfkey[i][(server_index>>i)%2];
+      }
+      uint8_t *response_words;// = (uint8_t *)malloc(dpf_key<nitems,leaf_type>::output_length*128);
+      err = posix_memalign((void**)&response_words, 32, dpf_key<nitems,leaf_type>::output_length*128);//
+      if(err) perror("Error in memalign");
+      //printf("working good 1\n");
+      dpf::evalfull_bitmore(aeskey, dpfkey_for_a_server, s, t, L_bits, response_words);
+      free(response_words);
+      //printf("working good 2\n");
+    }
+
+
+    //server_index query expansion and response construction
+    //evalfull_bitmore(AES_KEY & aeskey, dpf_key<nitems,leaf_type> * dpfkey,  __m128i ** s, uint8_t ** t, size_t L_bits, uint8_t * output )
+
     
+    
+    
+    /*
     uint64_t query[query_length];
     
     for(int i=0;i<query_length/2;i++) {
@@ -182,44 +218,49 @@ int main(int argc, char *argv[]) {
     //   printf("%llx\n",  s[i][0] ^ s1[i][0]);
     //   printf("%llx\n",  s[i][1] ^ s1[i][1]);
     // }
-    
-    free(s);
-    free(t);
+    */
 
-    free(s1);
-    free(t1);
+    // for(size_t i = 0; i < L_bits; ++i) {
+    //   free(s[i]);
+    //   free(t[i]);
+    // }
+    // free(s);
+    // free(t);
+
+    // // free(s1);
+    // // free(t1);
 
 
     
     free(chunks);
+    // free(response_words);
     return 0;
 }
 
+//it takes L or nmasks leaves that is 128 bits long and outputs 128 bytes, where each byte is a word number in the row
 /*void splice(const _m128i * mask, uint8_t nmasks, _m1024i out)
 {
-	const _m256i shuffle = mm256_setr_epi64x(0x0000000000000000,
-		0x0101010101010101, 0x0202020202020202, 0x0303030303030303);
+	const _m256i shuffle = mm256_setr_epi64x(0x0000000000000000, 0x0101010101010101, 0x0202020202020202, 0x0303030303030303);
 	const _m256i bit_mask = mm256_set1_epi64x(0x7fbfdfeff7fbfdfe);
 	const _m256i ff = mm256_set1_epi64x(0xffffffffffffffff);
 	const _m256i shift[] = { mm256_set1_epi8(1), _mm256_set1_epi8(2),
 		mm256_set1_epi8(4), mm256_set1_epi8(8), _mm256_set1_epi8(16),
 		mm256_set1_epi8(32), mm256_set1_epi8(64), _mm256_set1_epi8(128) };
 
-	for (uint8_t i = 0; i < nmasks; ++i)
-	{
+	for (uint8_t i = 0; i < nmasks; ++i) {
 		uint32_t * maski = (uint32_t*)&mask[i];
-		for (int j = 0; j < 4; j++)
-		{
-            out[j] = _mm256_or_si256(out[j], // accumulate into result
-			_mm256_and_si256(shift[i], // zero all but i'th bit of each byte
-				_mm256_cmpeq_epi8( // 0xff if byte is 0xff; else 0x00
-					_mm256_or_si256( // set bits not possibly set by shuffle
-						_mm256_shuffle_epi8( // shuffle 32 bits into 32 bytes
-							_mm256_set1_epi32(maski[j]), shuffle),
-						bit_mask),
-					ff)
-				)
-			);
+		for (int j = 0; j < 4; j++) {
+      out[j] = _mm256_or_si256(out[j], // accumulate into result
+			                         _mm256_and_si256(shift[i], // zero all but i'th bit of each byte
+				                                        _mm256_cmpeq_epi8( // 0xff if byte is 0xff; else 0x00
+					                                                       _mm256_or_si256( // set bits not possibly set by shuffle
+						                                                                    _mm256_shuffle_epi8( // shuffle 32 bits into 32 bytes
+							                                                                                     _mm256_set1_epi32(maski[j]), 
+                                                                                            shuffle), 
+                                                                        bit_mask),
+					                                                     ff)
+                                                )
+			                         );
 		}
 	}
 }*/

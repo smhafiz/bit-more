@@ -1,0 +1,56 @@
+***********************************
+Each row: 4.000 KiB, Database: 1.000 GiB.
+		rows: 2^18, ell: 5, soundness: 32
+All query generation:		mean: 24.01	sd: 4.62	support: 100
+Query expansion per server:	mean: 5779.12	sd: 165.81	support: 100
+Response generation per server:	mean: 48319.42	sd: 762.97	support: 100
+Record reconstruction:		mean: 1.36	sd: 0.48	support: 100
+***********************************
+Each row: 4.000 KiB, Database: 1.000 GiB.
+		rows: 2^18, ell: 5, soundness: 48
+All query generation:		mean: 29.11	sd: 1.70	support: 100
+Query expansion per server:	mean: 9300.98	sd: 330.58	support: 100
+Response generation per server:	mean: 48439.21	sd: 1203.97	support: 100
+Record reconstruction:		mean: 1.34	sd: 0.48	support: 100
+***********************************
+Each row: 4.000 KiB, Database: 1.000 GiB.
+		rows: 2^18, ell: 5, soundness: 64
+All query generation:		mean: 35.50	sd: 1.82	support: 100
+Query expansion per server:	mean: 13177.01	sd: 214.89	support: 100
+Response generation per server:	mean: 46925.00	sd: 431.97	support: 100
+Record reconstruction:		mean: 1.00	sd: 0.00	support: 100
+***********************************
+Each row: 4.000 KiB, Database: 1.000 GiB.
+		rows: 2^18, ell: 5, soundness: 96
+All query generation:		mean: 47.53	sd: 2.30	support: 100
+Query expansion per server:	mean: 22969.49	sd: 242.58	support: 100
+Response generation per server:	mean: 47213.95	sd: 691.43	support: 100
+Record reconstruction:		mean: 1.00	sd: 0.00	support: 99
+***********************************
+Each row: 4.000 KiB, Database: 1.000 GiB.
+		rows: 2^18, ell: 5, soundness: 112
+All query generation:		mean: 52.95	sd: 2.45	support: 100
+Query expansion per server:	mean: 29219.20	sd: 680.21	support: 100
+Response generation per server:	mean: 48285.01	sd: 1426.80	support: 100
+Record reconstruction:		mean: 1.00	sd: 0.00	support: 99
+***********************************
+Each row: 4.000 KiB, Database: 1.000 GiB.
+		rows: 2^18, ell: 5, soundness: 128
+All query generation:		mean: 60.89	sd: 5.22	support: 100
+Query expansion per server:	mean: 35357.41	sd: 889.87	support: 100
+Response generation per server:	mean: 45435.65	sd: 1590.11	support: 100
+Record reconstruction:		mean: 1.29	sd: 0.50	support: 100
+***********************************
+Each row: 4.000 KiB, Database: 1.000 GiB.
+		rows: 2^18, ell: 5, soundness: 192
+All query generation:		mean: 83.61	sd: 5.76	support: 100
+Query expansion per server:	mean: 67160.84	sd: 1345.68	support: 100
+Response generation per server:	mean: 44057.59	sd: 784.48	support: 100
+Record reconstruction:		mean: 1.33	sd: 0.47	support: 100
+***********************************
+Each row: 4.000 KiB, Database: 1.000 GiB.
+		rows: 2^18, ell: 5, soundness: 256
+All query generation:		mean: 108.14	sd: 5.58	support: 100
+Query expansion per server:	mean: 108905.75	sd: 1541.20	support: 100
+Response generation per server:	mean: 43891.09	sd: 685.62	support: 100
+Record reconstruction:		mean: 1.00	sd: 0.00	support: 100

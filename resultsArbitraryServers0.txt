@@ -1,0 +1,84 @@
+***********************************
+Each row: 8.000000 KiB, Database: 0.125000 GiB.
+		rows: 2^14, ell: 3
+All query generation:		mean: 52.080000	sd: 9.473706	support: 100
+Query expansion per server:	mean: 2584.103093	sd: 126.906912	support: 97
+Response generation per server:	mean: 5897.686667	sd: 307.358292	support: 100
+Record reconstruction:		mean: 1.510000	sd: 0.502418	support: 100
+***********************************
+Each row: 8.000000 KiB, Database: 0.125000 GiB.
+		rows: 2^14, ell: 6
+All query generation:		mean: 55.460000	sd: 14.205860	support: 100
+Query expansion per server:	mean: 2576.665000	sd: 160.047195	support: 100
+Response generation per server:	mean: 4900.431667	sd: 517.980325	support: 100
+Record reconstruction:		mean: 1.810000	sd: 0.486069	support: 100
+***********************************
+Each row: 8.000000 KiB, Database: 0.125000 GiB.
+		rows: 2^14, ell: 10
+All query generation:		mean: 49.810000	sd: 3.451526	support: 100
+Query expansion per server:	mean: 2266.835000	sd: 140.128511	support: 100
+Response generation per server:	mean: 3861.443000	sd: 461.815933	support: 100
+Record reconstruction:		mean: 2.000000	sd: 0.000000	support: 100
+***********************************
+Each row: 8.000000 KiB, Database: 0.125000 GiB.
+		rows: 2^14, ell: 15
+All query generation:		mean: 53.060000	sd: 5.602705	support: 100
+Query expansion per server:	mean: 2107.774667	sd: 111.441739	support: 100
+Response generation per server:	mean: 2765.304667	sd: 202.525109	support: 100
+Record reconstruction:		mean: 1.650000	sd: 0.479372	support: 100
+***********************************
+Each row: 8.000000 KiB, Database: 0.500000 GiB.
+		rows: 2^16, ell: 3
+All query generation:		mean: 52.740000	sd: 2.834207	support: 100
+Query expansion per server:	mean: 9435.556667	sd: 69.972643	support: 100
+Response generation per server:	mean: 20129.240000	sd: 273.823241	support: 100
+Record reconstruction:		mean: 1.000000	sd: 0.000000	support: 85
+***********************************
+Each row: 8.000000 KiB, Database: 0.500000 GiB.
+		rows: 2^16, ell: 6
+All query generation:		mean: 55.940000	sd: 2.501797	support: 100
+Query expansion per server:	mean: 9385.478333	sd: 62.128413	support: 100
+Response generation per server:	mean: 15469.640000	sd: 135.399400	support: 100
+Record reconstruction:		mean: 2.000000	sd: 0.000000	support: 100
+***********************************
+Each row: 8.000000 KiB, Database: 0.500000 GiB.
+		rows: 2^16, ell: 10
+All query generation:		mean: 57.510000	sd: 1.494062	support: 100
+Query expansion per server:	mean: 8494.036000	sd: 68.939035	support: 100
+Response generation per server:	mean: 13152.261000	sd: 110.503050	support: 100
+Record reconstruction:		mean: 2.000000	sd: 0.000000	support: 100
+***********************************
+Each row: 8.000000 KiB, Database: 0.500000 GiB.
+		rows: 2^16, ell: 15
+All query generation:		mean: 58.600000	sd: 3.411211	support: 100
+Query expansion per server:	mean: 8005.171333	sd: 42.098200	support: 100
+Response generation per server:	mean: 10506.763333	sd: 54.119641	support: 100
+Record reconstruction:		mean: 2.000000	sd: 0.000000	support: 100
+***********************************
+Each row: 8.000000 KiB, Database: 2.000000 GiB.
+		rows: 2^18, ell: 3
+All query generation:		mean: 59.290000	sd: 3.970332	support: 100
+Query expansion per server:	mean: 38454.816667	sd: 552.003606	support: 100
+Response generation per server:	mean: 80315.556667	sd: 1432.351294	support: 100
+Record reconstruction:		mean: 2.000000	sd: 0.000000	support: 79
+***********************************
+Each row: 8.000000 KiB, Database: 2.000000 GiB.
+		rows: 2^18, ell: 6
+All query generation:		mean: 64.430000	sd: 2.319243	support: 100
+Query expansion per server:	mean: 37774.176667	sd: 149.584666	support: 100
+Response generation per server:	mean: 59831.145000	sd: 284.978794	support: 100
+Record reconstruction:		mean: 2.000000	sd: 0.000000	support: 100
+***********************************
+Each row: 8.000000 KiB, Database: 2.000000 GiB.
+		rows: 2^18, ell: 10
+All query generation:		mean: 70.530000	sd: 4.729992	support: 100
+Query expansion per server:	mean: 34642.627000	sd: 680.481858	support: 100
+Response generation per server:	mean: 51908.322000	sd: 1119.631047	support: 100
+Record reconstruction:		mean: 1.740000	sd: 0.484507	support: 100
+***********************************
+Each row: 8.000000 KiB, Database: 2.000000 GiB.
+		rows: 2^18, ell: 15
+All query generation:		mean: 68.770000	sd: 3.366067	support: 100
+Query expansion per server:	mean: 32701.046667	sd: 860.646651	support: 100
+Response generation per server:	mean: 42537.438667	sd: 1858.475958	support: 100
+Record reconstruction:		mean: 2.000000	sd: 0.000000	support: 100
