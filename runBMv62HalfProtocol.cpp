@@ -58,7 +58,7 @@ int main(int argc, char * argv[])
         //break;
       }
 
-    constexpr std::array<uint8_t, 5> Nservers = {4, 8, 16, 32, 64};
+    constexpr std::array<uint8_t, 5> Nservers = {2, 4, 8, 16, 32};
     //constexpr std::array<uint8_t, 4> Nservers = {3, 6, 10, 15};
 
     constexpr uint8_t nservers = std::get<il.value>(Nservers);

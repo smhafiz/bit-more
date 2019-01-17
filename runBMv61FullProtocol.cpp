@@ -34,15 +34,15 @@ int main(int argc, char * argv[])
   AES_KEY aeskey;
   AES_set_encrypt_key(_mm_set_epi64x(597349, 121379), &aeskey);
 
-  constexpr std::array<uint8_t, 7> Lognitems = {22, 20, 18, 16, 14, 12, 10};
+  constexpr std::array<uint8_t, 1> Lognitems = {22};
   
-  for_constexpr<for_bounds<0, 5>, for_bounds<0, 7>>(
+  for_constexpr<for_bounds<0, 1>, for_bounds<0, 1>>(
       [&](auto il, auto ir) 
       
   {
     constexpr uint8_t lognitems = std::get<ir.value>(Lognitems);
     constexpr size_t nitems = (1ULL << lognitems);
-    constexpr size_t nbytes_per_row = 1024*2;
+    constexpr size_t nbytes_per_row = 256;
     constexpr size_t item = 101;
 
 
@@ -51,7 +51,7 @@ int main(int argc, char * argv[])
     err = posix_memalign((void**)&expanded_query, sizeof(__m256i), nitems * sizeof(uint8_t));
     if(err) perror("Error in memalign for expanded_query");
 
-    constexpr std::array<uint8_t, 5> Nservers = {2, 4, 8, 16, 32};
+    constexpr std::array<uint8_t, 1> Nservers = {2};
     //constexpr std::array<uint8_t, 4> Nservers = {3, 6, 10, 15};
 
     constexpr uint8_t nservers = std::get<il.value>(Nservers);
