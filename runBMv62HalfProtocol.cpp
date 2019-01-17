@@ -23,24 +23,24 @@ double getTimeElapsed(struct timeval end, struct timeval start)
 
 int main(int argc, char * argv[])
 {
-  int ntrials = 150, ntrials_pruned = 100, nmetrics = 2, confidence = 1;
+  int ntrials = 150, ntrials_pruned = 100, nmetrics = 2, confidence = 2;
   std::string metrics[] = {"All query generation:\t", "Query expansion per server:"};
   struct timeval tvalBefore, tvalAfter;
-  FILE *f = fopen("resultsP2Srvrs.txt", "w");
+  FILE *f = fopen("resultsP2SrvrsHPJan17.txt", "w");
   int err;
 
   AES_KEY aeskey;
   AES_set_encrypt_key(_mm_set_epi64x(597349, 121379), &aeskey);
 
-  constexpr std::array<uint8_t, 5> Lognitems = {8, 12, 16, 20, 24};
+  constexpr std::array<uint8_t, 6> Lognitems = {12, 16, 20, 24, 28, 32};
   
-  for_constexpr<for_bounds<0, 5>, for_bounds<0, 5>>(
-      [&](auto ir, auto il) 
+  for_constexpr<for_bounds<0, 5>, for_bounds<0, 6>>(
+      [&](auto il, auto ir) 
       
   {
     constexpr uint8_t lognitems = std::get<ir.value>(Lognitems);
     constexpr size_t nitems = (1ULL << lognitems);
-    constexpr size_t nbytes_per_row = 1024*32;
+    //constexpr size_t nbytes_per_row = 1024*2;
     //printf("***********************************\nEach row: %f KiB, Database: %f GiB.\n", (float)nbytes_per_row/(1024), (float)(nitems*nbytes_per_row)/(1024*1024*1024));
     // fprintf(f,"***********************************\nEach row: %.3f KiB, Database: %.3f GiB.\n", (float)nbytes_per_row/(1024), (float)(nitems*nbytes_per_row)/(1024*1024*1024));    
     constexpr size_t item = 101;
@@ -52,14 +52,18 @@ int main(int argc, char * argv[])
 
     uint8_t * expanded_query;
     err = posix_memalign((void**)&expanded_query, sizeof(__m256i), nitems * sizeof(uint8_t));
-    if(err) perror("Error in memalign for expanded_query");
+    if(err) 
+      {
+        perror("Error in memalign for expanded_query");
+        //break;
+      }
 
-    constexpr std::array<uint8_t, 7> Nservers = {4, 8, 16, 32, 64};
+    constexpr std::array<uint8_t, 5> Nservers = {4, 8, 16, 32, 64};
     //constexpr std::array<uint8_t, 4> Nservers = {3, 6, 10, 15};
 
     constexpr uint8_t nservers = std::get<il.value>(Nservers);
     constexpr size_t nwords_per_row = nservers-1;
-    constexpr size_t nbytes_per_word = std::ceil(nbytes_per_row / static_cast<double>(nwords_per_row));
+    //constexpr size_t nbytes_per_word = std::ceil(nbytes_per_row / static_cast<double>(nwords_per_row));
     constexpr size_t soundness = 0;
     constexpr size_t nkeys = std::ceil(std::log2(nservers)) + soundness;
     
@@ -88,6 +92,7 @@ int main(int argc, char * argv[])
       //Client: query generation
       gettimeofday(&tvalBefore, NULL);
       query q(aeskey, item);
+      auto Q = q.get_request(nwords_per_row);
       gettimeofday(&tvalAfter, NULL);
       time_elapses[0][trials] = getTimeElapsed(tvalAfter, tvalBefore);
       //fprintf(f, "%lf\n",time_elapses[trials]);
@@ -96,7 +101,6 @@ int main(int argc, char * argv[])
 
       //Query expansion at s+1 th server
       gettimeofday(&tvalBefore, NULL);
-      auto Q = q.get_request(nwords_per_row);
       bitmore::evalfull<nkeys,nitems,nservers>(aeskey, Q, s, t, expanded_query);
       gettimeofday(&tvalAfter, NULL);
       time_elapses[1][trials] = getTimeElapsed(tvalAfter, tvalBefore);
@@ -132,27 +136,27 @@ int main(int argc, char * argv[])
       //Query expansion and response word generation at the rest s number of servers, 0...s-1
       
       //record result = { qtemplate };
-      for (size_t k = 0; k < nservers-1; ++k)
-      {
-        gettimeofday(&tvalBefore, NULL);
-        Q = q.get_request(k);
-        bitmore::evalfull<nkeys,nitems,nservers>(aeskey, Q, s, t, expanded_query);
-        gettimeofday(&tvalAfter, NULL);
-        time_elapses[1][trials] += getTimeElapsed(tvalAfter, tvalBefore);
-        //fprintf(f, "%lf\n",time_elapses[trials]);
-        //sum[1]+=time_elapses[1][trials];
+      // for (size_t k = 0; k < nservers-1; ++k)
+      // {
+      //   gettimeofday(&tvalBefore, NULL);
+      //   Q = q.get_request(k);
+      //   bitmore::evalfull<nkeys,nitems,nservers>(aeskey, Q, s, t, expanded_query);
+      //   gettimeofday(&tvalAfter, NULL);
+      //   time_elapses[1][trials] += getTimeElapsed(tvalAfter, tvalBefore);
+      //   //fprintf(f, "%lf\n",time_elapses[trials]);
+      //   //sum[1]+=time_elapses[1][trials];
 
-        // gettimeofday(&tvalBefore, NULL);
-        // for (size_t i = 0; i < nitems; ++i)
-        // {
-        //   if (expanded_query[i] != nwords_per_row) result[k] ^= database[i][expanded_query[i]];
-        // }
-        // gettimeofday(&tvalAfter, NULL);
-        // time_elapses[2][trials] += getTimeElapsed(tvalAfter, tvalBefore);
-        //fprintf(f, "%lf\n",time_elapses[trials]);
-        //sum[2]+=time_elapses[2][trials];
-      }
-      time_elapses[1][trials]/=nservers;
+      //   // gettimeofday(&tvalBefore, NULL);
+      //   // for (size_t i = 0; i < nitems; ++i)
+      //   // {
+      //   //   if (expanded_query[i] != nwords_per_row) result[k] ^= database[i][expanded_query[i]];
+      //   // }
+      //   // gettimeofday(&tvalAfter, NULL);
+      //   // time_elapses[2][trials] += getTimeElapsed(tvalAfter, tvalBefore);
+      //   //fprintf(f, "%lf\n",time_elapses[trials]);
+      //   //sum[2]+=time_elapses[2][trials];
+      // }
+      //time_elapses[1][trials]/=nservers;
       // time_elapses[2][trials]/=nservers;
       sum[1]+=time_elapses[1][trials];
       // sum[2]+=time_elapses[2][trials];
@@ -173,7 +177,7 @@ int main(int argc, char * argv[])
       //   if(result[i].m256[0][0]!=0x00) {correct_ness = false; printf("%d->Incorrect!\n",nservers);break;}
       // }
       //if (correct_ness) printf("%zu->Correct protocol!\n",nservers);
-
+      printf("%u, %u [%d]->!\n",nservers, lognitems, trials);
       for (size_t i = 0; i < nkeys; ++i)
       {
         free(s[i]);

@@ -18,21 +18,21 @@ inline void static_for(lambda const & f)
 double getTimeElapsed(struct timeval end, struct timeval start)
 {
   //return ((end.tv_sec - start.tv_sec)*1000.00) + ((end.tv_usec - start.tv_usec) / 1000.00);//milliseconds
-  return ((end.tv_sec - start.tv_sec)*1000000.00) + ((end.tv_usec - start.tv_usec));//nanoseconds
+  return ((end.tv_sec - start.tv_sec)*1000000.00) + ((end.tv_usec - start.tv_usec));//microseconds
 }
 
 int main(int argc, char * argv[])
 {
-  int ntrials = 150, ntrials_pruned = 100, nmetrics = 4, confidence = 1;
-  std::string metrics[] = {"All query generation:\t", "Query expansion per server:", "Response generation per server:", "Record reconstruction:\t"};
+  int ntrials = 150, ntrials_pruned = 100, nmetrics = 4, confidence = 2;
+  std::string metrics[] = {"All query generation:\t\t", "Query expansion per server:\t", "Response generation per server:", "Record reconstruction:\t\t"};
   struct timeval tvalBefore, tvalAfter;
-  FILE *f = fopen("resultsArbitraryServersVaryingSoundness.txt", "w");
+  FILE *f = fopen("resultsArbitraryServersVaryingSoundnessJan17.txt", "w");
   int err;
 
   AES_KEY aeskey;
   AES_set_encrypt_key(_mm_set_epi64x(597349, 121379), &aeskey);
 
-  constexpr std::array<uint8_t, 1> Lognitems = {18};
+  constexpr std::array<uint8_t, 1> Lognitems = {22};
   
   for_constexpr<for_bounds<0, 1>, for_bounds<0, 8>>(
       [&](auto ir, auto is) 
@@ -40,7 +40,7 @@ int main(int argc, char * argv[])
   {
     constexpr uint8_t lognitems = std::get<ir.value>(Lognitems);
     constexpr size_t nitems = (1ULL << lognitems);
-    constexpr size_t nbytes_per_row = 1024*4;
+    constexpr size_t nbytes_per_row = 1024*2;
     //printf("***********************************\nEach row: %f KiB, Database: %f GiB.\n", (float)nbytes_per_row/(1024), (float)(nitems*nbytes_per_row)/(1024*1024*1024));
     fprintf(f,"***********************************\nEach row: %.3f KiB, Database: %.3f GiB.\n", (float)nbytes_per_row/(1024), (float)(nitems*nbytes_per_row)/(1024*1024*1024));    
     constexpr size_t item = 101;
