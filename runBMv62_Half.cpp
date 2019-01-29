@@ -38,7 +38,7 @@ double getTimeElapsedNanoSec(struct timeval end, struct timeval start)
 
 int main(int argc, char * argv[])
 {
-  int ntrials = 150, ntrials_pruned = 100, nmetrics = 2, confidence = 2;
+  int ntrials = 8, ntrials_pruned = 5, nmetrics = 2, confidence = 2;
   std::string metrics[] = {"All query generation (ns):\t", "Query expansion per server (ms):"};
   struct timeval tvalBefore, tvalAfter;
   FILE *f = fopen("power2_half_Jan28.txt", "w");

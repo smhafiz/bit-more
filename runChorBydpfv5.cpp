@@ -45,7 +45,7 @@ public:
 int main(int argc, char * argv[])
 {
   using namespace dpf;
-  int ntrials = 150, ntrials_pruned = 100, nmetrics = 4, confidence = 2;
+  int ntrials = 8, ntrials_pruned = 5, nmetrics = 4, confidence = 2;
   char* metrics[] = {"All query generation (us):\t", "Query expansion per server (us):", "Response generation per server (ms):", "Record reconstruction (ns):\t"};
   struct timeval tvalBefore, tvalAfter;
   FILE *f = fopen("result_chor_Jan27.txt", "w");
