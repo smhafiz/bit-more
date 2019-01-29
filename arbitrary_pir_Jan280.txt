@@ -1,0 +1,69 @@
+***********************************
+Each row: 0.500 KiB, Database: 2.00000 GiB, In memory: 3.50000 GiB.
+		rows: 2^22, ell: 15
+All query generation (us):		mean: 313.51000	sd: 21.49160	support: 100
+Query expansion per server (ms):	mean: 544.37399	sd: 9.91710	support: 100
+Response generation per server (ms):	mean: 80.87223	sd: 2.47515	support: 100
+Record reconstruction (ns):		mean: 520.00000	sd: 502.11673	support: 100
+***********************************
+Each row: 0.500 KiB, Database: 0.50000 GiB, In memory: 0.87500 GiB.
+		rows: 2^20, ell: 15
+All query generation (us):		mean: 264.67000	sd: 22.95980	support: 100
+Query expansion per server (ms):	mean: 132.18632	sd: 0.74923	support: 100
+Response generation per server (ms):	mean: 19.66580	sd: 0.31877	support: 100
+Record reconstruction (ns):		mean: 590.00000	sd: 494.31107	support: 100
+***********************************
+Each row: 0.500 KiB, Database: 0.12500 GiB, In memory: 0.21875 GiB.
+		rows: 2^18, ell: 15
+All query generation (us):		mean: 243.06000	sd: 23.79705	support: 100
+Query expansion per server (ms):	mean: 33.22959	sd: 0.44104	support: 100
+Response generation per server (ms):	mean: 4.97712	sd: 0.13534	support: 100
+Record reconstruction (ns):		mean: 430.00000	sd: 497.56985	support: 100
+***********************************
+Each row: 0.500 KiB, Database: 0.03125 GiB, In memory: 0.05469 GiB.
+		rows: 2^16, ell: 15
+All query generation (us):		mean: 208.54000	sd: 19.90199	support: 100
+Query expansion per server (ms):	mean: 8.20778	sd: 0.20503	support: 100
+Response generation per server (ms):	mean: 1.26927	sd: 0.07832	support: 100
+Record reconstruction (ns):		mean: 340.00000	sd: 476.09523	support: 100
+***********************************
+Each row: 0.500 KiB, Database: 0.00781 GiB, In memory: 0.01367 GiB.
+		rows: 2^14, ell: 15
+All query generation (us):		mean: 157.74000	sd: 16.86166	support: 100
+Query expansion per server (ms):	mean: 2.03138	sd: 0.05883	support: 100
+Response generation per server (ms):	mean: 0.28772	sd: 0.04025	support: 100
+Record reconstruction (ns):		mean: 360.00000	sd: 482.41815	support: 100
+***********************************
+Each row: 0.500 KiB, Database: 0.00195 GiB, In memory: 0.00342 GiB.
+		rows: 2^12, ell: 15
+All query generation (us):		mean: 104.87000	sd: 20.97697	support: 100
+Query expansion per server (ms):	mean: 0.49834	sd: 0.01327	support: 100
+Response generation per server (ms):	mean: 0.03952	sd: 0.01629	support: 100
+Record reconstruction (ns):		mean: 230.00000	sd: 422.95258	support: 100
+***********************************
+Each row: 0.500 KiB, Database: 0.00049 GiB, In memory: 0.00085 GiB.
+		rows: 2^10, ell: 15
+All query generation (us):		mean: 73.92000	sd: 13.31034	support: 100
+Query expansion per server (ms):	mean: 0.12633	sd: 0.00578	support: 100
+Response generation per server (ms):	mean: 0.00543	sd: 0.00248	support: 100
+Record reconstruction (ns):		mean: 0.00000	sd: 0.00000	support: 100
+***********************************
+Each row: 0.500 KiB, Database: 2.00000 GiB, In memory: 2.75000 GiB.
+		rows: 2^22, ell: 12
+All query generation (us):		mean: 269.90000	sd: 15.93326	support: 100
+Query expansion per server (ms):	mean: 627.88928	sd: 3.02017	support: 100
+Response generation per server (ms):	mean: 76.94768	sd: 0.88174	support: 100
+Record reconstruction (ns):		mean: 560.00000	sd: 498.88765	support: 100
+***********************************
+Each row: 0.500 KiB, Database: 0.50000 GiB, In memory: 0.68750 GiB.
+		rows: 2^20, ell: 12
+All query generation (us):		mean: 234.52000	sd: 17.91251	support: 100
+Query expansion per server (ms):	mean: 156.09085	sd: 0.75857	support: 100
+Response generation per server (ms):	mean: 19.67381	sd: 0.34842	support: 100
+Record reconstruction (ns):		mean: 560.00000	sd: 498.88765	support: 100
+***********************************
+Each row: 0.500 KiB, Database: 0.12500 GiB, In memory: 0.17188 GiB.
+		rows: 2^18, ell: 12
+All query generation (us):		mean: 205.84000	sd: 16.56985	support: 100
+Query expansion per server (ms):	mean: 39.08202	sd: 0.43865	support: 100
+Response generation per server (ms):	mean: 4.73034	sd: 0.14847	support: 100

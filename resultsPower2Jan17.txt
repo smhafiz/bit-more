@@ -1,7 +1,0 @@
-***********************************
-Each row: 0.250 KiB, Database: 1.00000 GiB, In memory: 1.00000.
-		rows: 2^22, ell: 2
-All query generation:			mean: 5.67	sd: 0.64	support: 100
-Query expansion per server:		mean: 12686.43	sd: 4.40	support: 100
-Response generation per server:	mean: 95721.83	sd: 67.38	support: 100
-Record reconstruction:			mean: 0.25	sd: 0.44	support: 100

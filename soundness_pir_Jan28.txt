@@ -1,0 +1,56 @@
+***********************************
+Each row: 0.500 KiB, Database: 2.00000 GiB, In memory: 2.00000 GiB.
+		rows: 2^22, ell: 5, soundness: 32
+All query generation (us):		mean: 52.43000	sd: 7.21986	support: 100
+Query expansion per server (ms):	mean: 85.88463	sd: 2.66001	support: 100
+Response generation per server (ms):	mean: 117.20187	sd: 3.66209	support: 100
+Record reconstruction (ns):		mean: 850.00000	sd: 385.99210	support: 100
+***********************************
+Each row: 0.500 KiB, Database: 2.00000 GiB, In memory: 2.00000 GiB.
+		rows: 2^22, ell: 5, soundness: 48
+All query generation (us):		mean: 71.73000	sd: 8.63146	support: 100
+Query expansion per server (ms):	mean: 143.02434	sd: 4.39671	support: 100
+Response generation per server (ms):	mean: 114.48191	sd: 3.36679	support: 100
+Record reconstruction (ns):		mean: 630.00000	sd: 485.23659	support: 100
+***********************************
+Each row: 0.500 KiB, Database: 2.00000 GiB, In memory: 2.00000 GiB.
+		rows: 2^22, ell: 5, soundness: 64
+All query generation (us):		mean: 93.00000	sd: 6.99639	support: 100
+Query expansion per server (ms):	mean: 207.18909	sd: 2.81585	support: 100
+Response generation per server (ms):	mean: 114.04674	sd: 2.61852	support: 100
+Record reconstruction (ns):		mean: 670.00000	sd: 472.58156	support: 100
+***********************************
+Each row: 0.500 KiB, Database: 2.00000 GiB, In memory: 2.00000 GiB.
+		rows: 2^22, ell: 5, soundness: 96
+All query generation (us):		mean: 130.13000	sd: 9.64800	support: 100
+Query expansion per server (ms):	mean: 364.96277	sd: 2.29545	support: 100
+Response generation per server (ms):	mean: 113.87645	sd: 1.41587	support: 100
+Record reconstruction (ns):		mean: 830.00000	sd: 377.52517	support: 100
+***********************************
+Each row: 0.500 KiB, Database: 2.00000 GiB, In memory: 2.00000 GiB.
+		rows: 2^22, ell: 5, soundness: 112
+All query generation (us):		mean: 151.09000	sd: 13.92846	support: 100
+Query expansion per server (ms):	mean: 460.21292	sd: 5.14330	support: 100
+Response generation per server (ms):	mean: 114.01687	sd: 2.97122	support: 100
+Record reconstruction (ns):		mean: 800.00000	sd: 402.01513	support: 100
+***********************************
+Each row: 0.500 KiB, Database: 2.00000 GiB, In memory: 2.00000 GiB.
+		rows: 2^22, ell: 5, soundness: 128
+All query generation (us):		mean: 174.01000	sd: 15.12673	support: 100
+Query expansion per server (ms):	mean: 569.17603	sd: 6.99954	support: 100
+Response generation per server (ms):	mean: 113.41469	sd: 2.03385	support: 100
+Record reconstruction (ns):		mean: 740.00000	sd: 440.84400	support: 100
+***********************************
+Each row: 0.500 KiB, Database: 2.00000 GiB, In memory: 2.00000 GiB.
+		rows: 2^22, ell: 5, soundness: 192
+All query generation (us):		mean: 240.01000	sd: 18.07196	support: 100
+Query expansion per server (ms):	mean: 1084.96617	sd: 8.18316	support: 100
+Response generation per server (ms):	mean: 114.04312	sd: 4.69394	support: 100
+Record reconstruction (ns):		mean: 630.00000	sd: 485.23659	support: 100
+***********************************
+Each row: 0.500 KiB, Database: 2.00000 GiB, In memory: 2.00000 GiB.
+		rows: 2^22, ell: 5, soundness: 256
+All query generation (us):		mean: 305.75000	sd: 27.53010	support: 100
+Query expansion per server (ms):	mean: 1772.75673	sd: 8.46070	support: 100
+Response generation per server (ms):	mean: 112.82414	sd: 1.70325	support: 100
+Record reconstruction (ns):		mean: 680.00000	sd: 468.82617	support: 100
