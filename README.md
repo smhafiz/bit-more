@@ -1,2 +1,1 @@
-# bit_more_than_a_bit
-The experiments for bit more than a bit paper
+The experiments for the bitmore paper: Hafiz, Syed Mahbub, and Ryan Henry. "A Bit More Than a Bit Is More Than a Bit Better". Proceedings on Privacy Enhancing Technologies 2019.4: 112-131. https://doi.org/10.2478/popets-2019-0061 Web.
